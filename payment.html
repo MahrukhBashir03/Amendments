@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 0;
+    }
+
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+
+    .form-container {
+      width: 60%;
+      margin: 20px auto;
+      background-color: #ffffff;
+      padding: 20px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      border-radius: 8px;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+    }
+
+    legend {
+      font-size: 1.2em;
+      margin-bottom: 10px;
+    }
+
+    label {
+      font-size: 1em;
+      margin-bottom: 8px;
+    }
+
+    input[type="number"],
+    input[type="email"],
+    input[type="password"],
+    input[type="date"],
+    select,
+    textarea {
+      padding: 8px;
+      margin-bottom: 12px;
+      width: 100%;
+      box-sizing: border-box;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    textarea {
+      resize: vertical;
+    }
+
+    .gender {
+      margin-bottom: 12px;
+    }
+
+    .gender label {
+      margin-right: 15px;
+    }
+
+    .pay-now {
+      padding: 10px 20px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 1.1em;
+      margin-top: 20px;
+    }
+
+    .pay-now:hover {
+      background-color: #45a049;
+    }
+
+    hr {
+      border: 1px solid #ddd;
+      margin: 20px 0;
+    }
+
+    .form-container ul {
+      padding-left: 20px;
+      margin-top: 10px;
+      list-style-type: square;
+    }
+
+    .form-container ul b {
+      font-size: 1.2em;
+    }
+  </style>
+  <title>Payment Form</title>
+</head>
+
+<body>
+  <div class="form-container">
+    <h1>
+      <ul><b>PAYMENT FORM</b></ul>
+    </h1>
+    <form id="payment-form">
+      <hr>
+      <!-- Payment Information Section -->
+      <div>
+        <legend><u><b>Payment Information</b></u></legend>
+        <label for="card-type">Card Type:</label>
+        <select id="card-type" name="card-type">
+          <option value="" disabled selected>Select an option</option>
+          <option value="visa">Visa</option>
+          <option value="mastercard">MasterCard</option>
+          <option value="amex">American Express</option>
+        </select>
+        <br>
+        <label for="card-number">Card Number:</label>
+        <input type="number" id="card-number" name="card-number" maxlength="16" required>
+        <br>
+        <label for="expiry">Expiration Date:</label>
+        <input type="date" id="expiry" name="expiry" onchange="validateDate(this)">
+        <br>
+        <label for="payment-pincode">Pincode:</label>
+        <input type="password" id="payment-pincode" name="payment-pincode" maxlength="4" required>
+      </div>
+
+      <button type="submit" class="pay-now">Pay Now</button>
+    </form>
+  </div>
+
+
+  <script>
+    const cardTypeInput = document.getElementById("card-type");
+        const cardNumberInput = document.getElementById("card-number");
+
+        // Define patterns for card types
+        const firstDigitPatterns = {
+            visa: /^4/,           // Visa cards start with 4
+            mastercard: /^[5]/,   // MasterCard cards start with 5
+            amex: /^[3]/          // Amex cards start with 3
+        };
+
+        // Validate the first digit in real-time
+        cardNumberInput.addEventListener("input", () => {
+            const cardType = cardTypeInput.value;
+            const cardNumber = cardNumberInput.value.trim();
+
+            if (cardNumber.length > 0) {
+                const firstDigit = cardNumber[0];
+
+                if (!firstDigitPatterns[cardType]?.test(firstDigit)) {
+                    cardNumberInput.setCustomValidity(
+                        `The first digit (${firstDigit}) does not match the selected card type (${cardType}).`
+                    );
+                    cardNumberInput.reportValidity();
+                } else {
+                    cardNumberInput.setCustomValidity(""); // Clear any custom error message
+                }
+            }
+        });
+
+        // Handle form submission
+        document.getElementById("payment-form").addEventListener("submit", (event) => {
+            event.preventDefault(); // Prevent the default form submission
+
+            const cardType = cardTypeInput.value;
+            const cardNumber = cardNumberInput.value.trim();
+
+            const patterns = {
+                visa: /^4[0-9]{12}(?:[0-9]{3})?$/,        // Visa cards start with 4 and are 13 or 16 digits long
+                mastercard: /^5[1-5][0-9]{14}$/,          // MasterCard cards start with 51-55 and are 16 digits long
+                amex: /^3[47][0-9]{13}$/                 // Amex cards start with 34 or 37 and are 15 digits long
+            };
+
+            if (!patterns[cardType]?.test(cardNumber)) {
+                alert(`Invalid card number for the selected card type: ${cardType}`);
+                return false;
+            }else if (isNaN(cardNumber)) {
+              alert("only numbers are allowed ! please enter a valid card numbers");
+              return false;
+            }
+            
+            alert("Form submitted successfully!");
+            return true;
+        });
+    function validateDate(input) {
+        const selectedDate = new Date(input.value);
+        const today = new Date();
+        today.setHours(0, 0, 0, 0); // Clear time for accurate comparison
+
+        if (selectedDate < today) {
+            alert("The card is expired!");
+            input.value = ""; // Clear invalid input
+        }
+        
+        document.getElementById("payment-form").onsubmit = payment-form;
+        alert("form submitted successfully!")
+        return truer;
+    }
+
+</script>
+
+</body>
+
+</html>
